@@ -1,0 +1,19 @@
+
+digraph G{
+ConversationSystem -> Greeting [style=bold];
+ConversationSystem -> Farewell [style=bold];
+Greeting -> Hello [style=bold];
+Greeting -> Attribute;
+Greeting -> Object [style=bold];
+Attribute -> {Beautiful; Nice};
+Object -> {Planet; World; UserInput};
+Planet -> Attribute [style=dotted, label="<requires>"];
+Farewell -> Bye [style=bold];
+Bye -> {ByeWithComma; ByeWithExclamation};
+Farewell -> Object;
+UserInput -> ByeWithComma [style=dotted, label="<requires>"];
+
+Attribute [style=dotted];
+Object [peripheries=2];
+Bye [peripheries=2];
+}
