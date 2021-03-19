@@ -1,20 +1,3 @@
-/*
-==========================================================================
-File:        ex2.c (skeleton)
-Version:     5, 19/12/2017
-Author:     Toby Howard
-==========================================================================
-*/
-
-/* The following ratios are not to scale: */
-/* Moon orbit : planet orbit */
-/* Orbit radius : body radius */
-/* Sun radius : planet radius */
-
-
-//Explain the meaning of the next level?
-//Why use this code, explain the complexity?
-
 #ifdef MACOS
   #include <GLUT/glut.h>
 #else
@@ -39,7 +22,6 @@ Author:     Toby Howard
 
 #define RUN_SPEED  500000
 #define TURN_ANGLE 4.0
-
 typedef struct {
   char    name[25];       /* name */
   GLfloat r,g,b;          /* colour */
@@ -76,8 +58,6 @@ float myRand (void)
   return (float) (rand()-rand()) / RAND_MAX * 2;
 }
 
-/*****************************/
-
 void drawStarfield (void)
 {
   srand(1);
@@ -92,55 +72,6 @@ void drawStarfield (void)
   glEnd ();
 }
 
-/*****************************/
-
-void readSystem(void)
-{
-  /* reads in the description of the solar system */
-
-  FILE *f;
-  int i;
-
-  f= fopen("sys", "r");
-  if (f == NULL) {
-     printf("Program couldn't open the specifications file 'sys'\n");
-     printf("Please create the file\n");
-     exit(0);
-  }
-  fscanf(f, "%d", &numBodies);
-  for (i= 0; i < numBodies; i++)
-  {
-    fscanf(f, "%s %f %f %f %f %f %f %f %f %f %d",
-      bodies[i].name,
-      &bodies[i].r, &bodies[i].g, &bodies[i].b,
-      &bodies[i].orbital_radius,
-      &bodies[i].orbital_tilt,
-      &bodies[i].orbital_period,
-      &bodies[i].radius,
-      &bodies[i].axis_tilt,
-      &bodies[i].rot_period,
-      &bodies[i].orbits_body);
-
-    /* Initialise the body's state */
-    bodies[i].spin= 0.0;
-    bodies[i].orbit= myRand() * 360.0; /* Start each body's orbit at a
-                                          random angle */
-    bodies[i].radius*= 1000.0; /* Magnify the radii to make them visible */
-  }
-  fclose(f);
-}
-
-/*****************************/
-
-void drawString (void *font, float x, float y, char *str)
-{ /* Displays the string "str" at (x,y,0), using font "font" */
-
-  /* This is for you to complete. */
-
-}
-
-/*****************************/
-
 void calculate_lookpoint(void) { /* Given an eyepoint and latitude and longitude angles, will
      compute a look point one unit away */
   double dir_x, dir_y, dir_z;
@@ -154,8 +85,6 @@ void calculate_lookpoint(void) { /* Given an eyepoint and latitude and longitude
   centerz = eyez + dir_z*100;
 
 } // calculate_lookpoint()
-
-int j;
 
 void setView (void) {
   glMatrixMode(GL_MODELVIEW);
@@ -194,8 +123,6 @@ void setView (void) {
   glutPostRedisplay();
 }
 
-/*****************************/
-
 void menu (int menuentry) {
   switch (menuentry) {
   case 1: current_view= TOP_VIEW;
@@ -214,38 +141,15 @@ void menu (int menuentry) {
           break;
   case 8: draw_orbits= !draw_orbits;
           break;
-  case 9: draw_starfield= !draw_starfield;
-          break;
+  case 9: draw_starfield= !draw_starfield; break;
   case 10: exit(0);
   }
 }
-
-/*****************************/
 
 void init(void)
 {
   /* Define background colour */
   glClearColor(0.0, 0.0, 0.0, 0.0);
-
-  glutCreateMenu (menu);
-  glutAddMenuEntry ("Top view", 1);
-  glutAddMenuEntry ("Ecliptic view", 2);
-  glutAddMenuEntry ("Spaceship view", 3);
-  glutAddMenuEntry ("Earth view", 4);
-  glutAddMenuEntry ("Movie view", 5);
-  glutAddMenuEntry ("Fly view", 6);
-  glutAddMenuEntry ("", 999);
-  glutAddMenuEntry ("Toggle labels", 7);
-  glutAddMenuEntry ("Toggle orbits", 8);
-  glutAddMenuEntry ("Toggle starfield", 9);
-  glutAddMenuEntry ("", 999);
-  glutAddMenuEntry ("Quit", 10);
-  glutAttachMenu (GLUT_RIGHT_BUTTON);
-
-  current_view= TOP_VIEW;
-  draw_labels= 1;
-  draw_orbits= 1;
-  draw_starfield= 1;
 
   /* Set initial view parameters */
   eyex= 0; /* Set eyepoint at eye height within the scene */
@@ -261,24 +165,27 @@ void init(void)
 
   mlat= 0.0;  /* Zero mouse look angles */
   mlon= 0.0;
+
+  current_view= TOP_VIEW;
+  draw_labels= 1;
+  draw_orbits= 1;
+
+  glutCreateMenu (menu);
+  glutAddMenuEntry ("Top view", 1);
+  glutAddMenuEntry ("Ecliptic view", 2);
+  glutAddMenuEntry ("Spaceship view", 3);
+  glutAddMenuEntry ("Earth view", 4);
+  glutAddMenuEntry ("Movie view", 5);
+  glutAddMenuEntry ("Fly view", 6);
+  glutAddMenuEntry ("", 999);
+  glutAddMenuEntry ("Toggle labels", 7);
+  glutAddMenuEntry ("Toggle orbits", 8);
+  glutAddMenuEntry ("Toggle starfield", 9);
+  glutAddMenuEntry ("", 999);
+  glutAddMenuEntry ("Quit", 10);
+  glutAttachMenu (GLUT_RIGHT_BUTTON);
+  draw_starfield= 1;
 }
-
-/*****************************/
-
-void animate(void)
-{
-  int i;
-
-    date+= TIME_STEP;
-
-    for (i= 0; i < numBodies; i++)  {
-      bodies[i].spin += 360.0 * TIME_STEP / bodies[i].rot_period;
-      bodies[i].orbit += 360.0 * TIME_STEP / bodies[i].orbital_period;
-      glutPostRedisplay();
-    }
-}
-
-/*****************************/
 
 void drawOrbit (int n)
 {
@@ -300,10 +207,6 @@ void drawOrbit (int n)
         glEnd();
     }
 }
-
-/*****************************/
-
-void drawLabel(int n){ /* Draws the name of body "n" */}
 
 /*****************************/
 
@@ -413,7 +316,6 @@ void display(void)
   /* set the camera */
   setView();
 
-  if (draw_starfield) drawStarfield();
   if (draw_Axes) drawAxes();
 
   for (i= 0; i < numBodies; i++)
@@ -422,9 +324,75 @@ void display(void)
       drawBody (i);
     glPopMatrix();
   }
-
+  if (draw_starfield) drawStarfield();
   glutSwapBuffers();
 }
+
+void readSystem(void)
+{
+  /* reads in the description of the solar system */
+
+  FILE *f;
+  int i;
+
+  f= fopen("sys", "r");
+  if (f == NULL) {
+     printf("Program couldn't open the specifications file 'sys'\n");
+     printf("Please create the file\n");
+     exit(0);
+  }
+  fscanf(f, "%d", &numBodies);
+  for (i= 0; i < numBodies; i++)
+  {
+    fscanf(f, "%s %f %f %f %f %f %f %f %f %f %d",
+      bodies[i].name,
+      &bodies[i].r, &bodies[i].g, &bodies[i].b,
+      &bodies[i].orbital_radius,
+      &bodies[i].orbital_tilt,
+      &bodies[i].orbital_period,
+      &bodies[i].radius,
+      &bodies[i].axis_tilt,
+      &bodies[i].rot_period,
+      &bodies[i].orbits_body);
+
+    /* Initialise the body's state */
+    bodies[i].spin= 0.0;
+    bodies[i].orbit= myRand() * 360.0; /* Start each body's orbit at a
+                                          random angle */
+    bodies[i].radius*= 1000.0; /* Magnify the radii to make them visible */
+  }
+  fclose(f);
+}
+
+/*****************************/
+
+void drawString (void *font, float x, float y, char *str)
+{ /* Displays the string "str" at (x,y,0), using font "font" */
+
+  /* This is for you to complete. */
+
+}
+
+/*****************************/
+
+int j;
+
+void animate(void)
+{
+  int i;
+
+    date+= TIME_STEP;
+
+    for (i= 0; i < numBodies; i++)  {
+      bodies[i].spin += 360.0 * TIME_STEP / bodies[i].rot_period;
+      bodies[i].orbit += 360.0 * TIME_STEP / bodies[i].orbital_period;
+      glutPostRedisplay();
+    }
+}
+
+/*****************************/
+
+void drawLabel(int n){ /* Draws the name of body "n" */}
 
 /*****************************/
 
