@@ -1,0 +1,28 @@
+
+digraph G{
+CameraView [style=dotted];
+A [label="Reading planet data"];
+B [label="Ability to toggle features"];
+C [label="Single camera view"];
+D [label="Multiple camera views", style=dotted];
+E [label="Camera moving in a pattern"];
+F [label="Camera moving from user input"];
+SolarSystem -> KeyboardControl;
+F -> KeyboardControl [style=dotted, label="<requires>"];
+SolarSystem -> A [style=bold];
+SolarSystem -> PlanetAnimation [style=bold];
+SolarSystem -> CameraView [style=bold];
+SolarSystem -> Menu;
+SolarSystem -> B;
+SolarSystem -> Axes;
+SolarSystem -> StarField;
+B -> Menu [style=dotted, label="<requires>"];
+CameraView -> C;
+CameraView -> D;
+D -> B [style=dotted, label="<requires>"];
+D -> StaticCamera;
+D -> E;
+D -> F;
+Axes -> B [style=dotted, label="<requires>"];
+StarField -> B [style=dotted, label="<requires>"];
+}

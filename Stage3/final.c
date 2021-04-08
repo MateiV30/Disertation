@@ -327,7 +327,6 @@ void display(void)
   if (draw_starfield) drawStarfield();
   glutSwapBuffers();
 }
-
 void readSystem(void)
 {
   /* reads in the description of the solar system */
@@ -365,6 +364,7 @@ void readSystem(void)
 }
 
 /*****************************/
+
 
 void drawString (void *font, float x, float y, char *str)
 { /* Displays the string "str" at (x,y,0), using font "font" */

@@ -1,3 +1,8 @@
+# Initial approach, just combine precompiled code. Because liniar execution,
+# no interferance between features.
+# 3d animation is a continuous loop which makes the feature integration a lot
+# more complicated
+#
 # Build code in steps
 # First header then functions
 # Put functions inside text files.
@@ -5,6 +10,10 @@
 # Add bits of code as fucntions
 
 # Write the bits of code from txt files to a new c file
+
+# Important components, where the code is written and where the code is combined
+# Need to identify the combination hotspots: the main function, the init function,
+# the viewpoint function
 
 drawStarfield = input("Do you want a starfield [yes/no] ")
 
@@ -123,6 +132,14 @@ with open('final.c', 'a') as writer:
         writer.write("  if (draw_starfield) drawStarfield();\n")
     writer.write("  glutSwapBuffers();\n")
     writer.write("}\n")
+reader.close()
+writer.close()
+
+print("Writing readSystem function")
+with open('readSystem.c', 'r') as reader:
+    code = reader.read()
+with open('final.c', 'a') as writer:
+    writer.write(code)
 reader.close()
 writer.close()
 
