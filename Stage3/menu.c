@@ -13,7 +13,3 @@ void menu (int menuentry) {
           break;
   case 6: current_view= FLY_VIEW;
           break;
-  case 7: draw_labels= !draw_labels;
-          break;
-  case 8: draw_orbits= !draw_orbits;
-          break;

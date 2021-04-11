@@ -8,13 +8,9 @@ void display(void)
   /* set the camera */
   setView();
 
-  if (draw_Axes) drawAxes();
-
   for (i= 0; i < numBodies; i++)
   {
     glPushMatrix();
       drawBody (i);
     glPopMatrix();
   }
-
-/*****************************/

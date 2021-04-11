@@ -24,7 +24,7 @@ void drawBody(int n)
 
     glRotatef(bodies[n].orbital_tilt, 1.0, 0.0, 0.0);
     glRotatef(bodies[n].orbit, 0, 1, 0);
-    drawOrbit(n);
+    if(have_Orbit) drawOrbit(n);
     glTranslatef(bodies[n].orbital_radius, 0, 0);// + bodies[n].orbit);
     glRotatef(bodies[n].axis_tilt, 1.0, 0.0, 0.0);
     glRotatef(bodies[n].spin, 0.0, 1.0, 0.0);
@@ -48,7 +48,7 @@ void drawBody(int n)
     glTranslatef(bodies[bodies[n].orbits_body].orbital_radius, 0, 0);// + bodies[n].orbit);
     glRotatef(bodies[bodies[n].orbits_body].axis_tilt, 1.0, 0.0, 0.0);
     glRotatef(bodies[n].orbit, 0.0, 1.0, 0.0);
-    drawOrbit(n);
+    if(have_Orbit) drawOrbit(n);
     glTranslatef(bodies[n].orbital_radius, 0, 0);
     glRotatef(bodies[n].axis_tilt, 0.0, 1.0, 0.0);
     glRotatef(bodies[n].spin, 0.0, 1.0, 0.0);

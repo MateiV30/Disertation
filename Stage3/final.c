@@ -50,26 +50,15 @@ GLfloat  upx,     upy,     upz;     /* View up vector           */
 GLint width= 900, height= 900;      /* size of window           */
 
 /*****************************/
+GLboolean have_Orbit = GL_FALSE;
+
+/*****************************/
 
 float myRand (void)
 {
   /* return a random float in the range [0,1] */
 
   return (float) (rand()-rand()) / RAND_MAX * 2;
-}
-
-void drawStarfield (void)
-{
-  srand(1);
-  /* This is for you to complete. */
-  int i;
-  glBegin (GL_POINTS);
-    for(i=0; i<1000; i++)
-      {
-        glColor3f(255.0, 255.0, 255.0);
-        glVertex3f(myRand()*1000000000, myRand()*1000000000, myRand()*100000000);
-      }
-  glEnd ();
 }
 
 void calculate_lookpoint(void) { /* Given an eyepoint and latitude and longitude angles, will
@@ -123,29 +112,6 @@ void setView (void) {
   glutPostRedisplay();
 }
 
-void menu (int menuentry) {
-  switch (menuentry) {
-  case 1: current_view= TOP_VIEW;
-          break;
-  case 2: current_view= ECLIPTIC_VIEW;
-          break;
-  case 3: current_view= SHIP_VIEW;
-          break;
-  case 4: current_view= EARTH_VIEW;
-          break;
-  case 5: current_view= MOVIE_VIEW;
-          break;
-  case 6: current_view= FLY_VIEW;
-          break;
-  case 7: draw_labels= !draw_labels;
-          break;
-  case 8: draw_orbits= !draw_orbits;
-          break;
-  case 9: draw_starfield= !draw_starfield; break;
-  case 10: exit(0);
-  }
-}
-
 void init(void)
 {
   /* Define background colour */
@@ -169,47 +135,11 @@ void init(void)
   current_view= TOP_VIEW;
   draw_labels= 1;
   draw_orbits= 1;
-
-  glutCreateMenu (menu);
-  glutAddMenuEntry ("Top view", 1);
-  glutAddMenuEntry ("Ecliptic view", 2);
-  glutAddMenuEntry ("Spaceship view", 3);
-  glutAddMenuEntry ("Earth view", 4);
-  glutAddMenuEntry ("Movie view", 5);
-  glutAddMenuEntry ("Fly view", 6);
-  glutAddMenuEntry ("", 999);
-  glutAddMenuEntry ("Toggle labels", 7);
-  glutAddMenuEntry ("Toggle orbits", 8);
-  glutAddMenuEntry ("Toggle starfield", 9);
   glutAddMenuEntry ("", 999);
   glutAddMenuEntry ("Quit", 10);
   glutAttachMenu (GLUT_RIGHT_BUTTON);
-  draw_starfield= 1;
 }
-
-void drawOrbit (int n)
-{
-    if(draw_orbits)
-    {
-      int i;
-      glBegin(GL_LINE_LOOP);
-        for(i = 0; i < ORBIT_POLY_SIDES; i++)
-        {
-          float theta = 2.0f * 3.1415926f * (float)i / (float)ORBIT_POLY_SIDES;//get the current angle
-          //float theta = 90-((ORBIT_POLY_SIDES-2)*180 / 2*ORBIT_POLY_SIDES);
-
-          float x = bodies[n].orbital_radius * sinf(theta);//calculate the x component
-          float z = bodies[n].orbital_radius * cosf(theta);//calculate the y component
-
-          glVertex3f(x, 0, z);//output vertex
-        }
-        glColor3f(bodies[n].r, bodies[n].g, bodies[n].b);
-        glEnd();
-    }
-}
-
-/*****************************/
-
+void drawOrbit (int n) {}
 void drawBody(int n)
 {
  /* Draws body "n" */
@@ -235,7 +165,7 @@ void drawBody(int n)
 
     glRotatef(bodies[n].orbital_tilt, 1.0, 0.0, 0.0);
     glRotatef(bodies[n].orbit, 0, 1, 0);
-    drawOrbit(n);
+    if(have_Orbit) drawOrbit(n);
     glTranslatef(bodies[n].orbital_radius, 0, 0);// + bodies[n].orbit);
     glRotatef(bodies[n].axis_tilt, 1.0, 0.0, 0.0);
     glRotatef(bodies[n].spin, 0.0, 1.0, 0.0);
@@ -259,7 +189,7 @@ void drawBody(int n)
     glTranslatef(bodies[bodies[n].orbits_body].orbital_radius, 0, 0);// + bodies[n].orbit);
     glRotatef(bodies[bodies[n].orbits_body].axis_tilt, 1.0, 0.0, 0.0);
     glRotatef(bodies[n].orbit, 0.0, 1.0, 0.0);
-    drawOrbit(n);
+    if(have_Orbit) drawOrbit(n);
     glTranslatef(bodies[n].orbital_radius, 0, 0);
     glRotatef(bodies[n].axis_tilt, 0.0, 1.0, 0.0);
     glRotatef(bodies[n].spin, 0.0, 1.0, 0.0);
@@ -280,33 +210,6 @@ void drawBody(int n)
 
 /*****************************/
 
-void drawAxes (void) {
-
-// Draws X Y and Z axis lines, of length LEN
-
-   float LEN= 1000000000000000.0;
-
-   glLineWidth(2.0);
-
-   glBegin(GL_LINES);
-   glColor3f(1.0,0.0,0.0); // red
-       glVertex3f(0.0, 0.0, 0.0);
-       glVertex3f(LEN, 0.0, 0.0);
-
-   glColor3f(0.0,1.0,0.0); // green
-       glVertex3f(0.0, 0.0, 0.0);
-       glVertex3f(0.0, LEN, 0.0);
-
-   glColor3f(0.0,0.0,1.0); // blue
-       glVertex3f(0.0, 0.0, 0.0);
-       glVertex3f(0.0, 0.0, LEN);
-   glEnd();
-
-   glLineWidth(1.0);
-}
-
-/***********************************/
-
 void display(void)
 {
   int i;
@@ -316,15 +219,12 @@ void display(void)
   /* set the camera */
   setView();
 
-  if (draw_Axes) drawAxes();
-
   for (i= 0; i < numBodies; i++)
   {
     glPushMatrix();
       drawBody (i);
     glPopMatrix();
   }
-  if (draw_starfield) drawStarfield();
   glutSwapBuffers();
 }
 void readSystem(void)
@@ -364,18 +264,7 @@ void readSystem(void)
 }
 
 /*****************************/
-
-
-void drawString (void *font, float x, float y, char *str)
-{ /* Displays the string "str" at (x,y,0), using font "font" */
-
-  /* This is for you to complete. */
-
-}
-
 /*****************************/
-
-int j;
 
 void animate(void)
 {
@@ -388,6 +277,14 @@ void animate(void)
       bodies[i].orbit += 360.0 * TIME_STEP / bodies[i].orbital_period;
       glutPostRedisplay();
     }
+}
+
+
+void drawString (void *font, float x, float y, char *str)
+{ /* Displays the string "str" at (x,y,0), using font "font" */
+
+  /* This is for you to complete. */
+
 }
 
 /*****************************/
@@ -415,95 +312,6 @@ void mouse_motion(int x, int y) {
   mlat = -100*y/height + 50;
 
 } // mouse_motion()
-
-void keyboard(unsigned char key, int x, int y)
-{
-  double Dx, Dz;
-  switch(key)
-  {
-    case 27:  /* Escape key */
-      exit(0);
-    case 97:
-      if(draw_Axes)
-          draw_Axes = GL_FALSE;
-      else draw_Axes = GL_TRUE;
-      break;
-    case 44: //Comma
-      Dx = sin((lon+90)*DEG_TO_RAD) * RUN_SPEED;
-      Dz = cos((lon+90)*DEG_TO_RAD) * RUN_SPEED;
-      eyex = eyex + Dx;
-      eyez = eyez + Dz;
-      break;
-    case 46: //Full-stop
-      Dx = sin((lon-90)*DEG_TO_RAD) * RUN_SPEED;
-      Dz = cos((lon-90)*DEG_TO_RAD) * RUN_SPEED;
-      eyex = eyex + Dx;
-      eyez = eyez + Dz;
-      break;
-    }
-  glutPostRedisplay();
-}
-
-void cursor_keys(int key, int x, int y)
-{
-  float Dx, Dy, Dz;
-  Dx = sin(lon*DEG_TO_RAD) * RUN_SPEED;
-  Dy = sin(lat*DEG_TO_RAD) * RUN_SPEED;
-  Dz = cos(lon*DEG_TO_RAD) * RUN_SPEED;
-  switch (key)
-   {
-    case GLUT_KEY_LEFT:
-	   lon = lon + TURN_ANGLE; break;
-    case GLUT_KEY_RIGHT:
-	   lon = lon - TURN_ANGLE; break;
-    case GLUT_KEY_PAGE_UP:
-	   if(lat + TURN_ANGLE < 90)
-	    {
-        lat = lat + TURN_ANGLE;
-        break;
-      }
-      else
-      {
-        lat = 89;
-        break;
-      }
-    case GLUT_KEY_PAGE_DOWN:
-	   if(lat - TURN_ANGLE > -90)
-	    {
-        lat = lat - TURN_ANGLE;
-        break;
-      }
-      else
-      {
-        lat = -89;
-        break;
-      }
-    case GLUT_KEY_HOME:
-	   lat = 0;
-     mlat = 0;
-     eyex = 0;
-     eyey = 0;
-     eyez = 0;
-     break;
-
-    case GLUT_KEY_UP:
-      eyex = eyex + Dx;
-      eyey = eyey + Dy;
-      eyez = eyez + Dz;
-      break;
-    case GLUT_KEY_DOWN:
-      eyex = eyex - Dx;
-      eyey = eyey - Dy;
-      eyez = eyez - Dz;
-      break;
-
-    case 27: exit(0); // '27' is ASCII code for the escape key
-    }
-
-    glutPostRedisplay(); // tell GLUT that a call to glutDisplayFunc() is needed
-      /* To be completed */
-} // cursor_keys()
-
 /*****************************/
 
 int main(int argc, char** argv)
@@ -516,11 +324,9 @@ int main(int argc, char** argv)
   init();
   glutDisplayFunc (display);
   glutReshapeFunc (reshape);
-  glutKeyboardFunc (keyboard);
-  glutSpecialFunc (cursor_keys);
   glutPassiveMotionFunc (mouse_motion);
-  glutIdleFunc (animate);
   readSystem();
+  glutIdleFunc (animate);
   glutMainLoop();
   return 0;
 }

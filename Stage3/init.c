@@ -22,14 +22,3 @@ void init(void)
   current_view= TOP_VIEW;
   draw_labels= 1;
   draw_orbits= 1;
-
-  glutCreateMenu (menu);
-  glutAddMenuEntry ("Top view", 1);
-  glutAddMenuEntry ("Ecliptic view", 2);
-  glutAddMenuEntry ("Spaceship view", 3);
-  glutAddMenuEntry ("Earth view", 4);
-  glutAddMenuEntry ("Movie view", 5);
-  glutAddMenuEntry ("Fly view", 6);
-  glutAddMenuEntry ("", 999);
-  glutAddMenuEntry ("Toggle labels", 7);
-  glutAddMenuEntry ("Toggle orbits", 8);
