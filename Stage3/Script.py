@@ -23,6 +23,7 @@
 # Having inneficienties created by the need to write versatile code
 # Introduced a variable in the code to check if we actually have orbits selectedd
 
+readStyle = input("How do you want to input the planet data? [file/cmd] ")
 drawAnimation = input("Do you want the planets moving? [yes/no] ")
 print("Axes, starfield, orbits, multiple camera views require the ability to interact with the system!")
 interaction = input("Do you want to be able to interact with the system? [yes/no] ")
@@ -251,8 +252,12 @@ reader.close()
 writer.close()
 
 print("Writing readSystem function")
-with open('readSystem.c', 'r') as reader:
-    code = reader.read()
+if readStyle == "file":
+  with open('readSystemFile.c', 'r') as reader:
+      code = reader.read()
+else:
+  with open('readSystemCmd.c', 'r') as reader:
+      code = reader.read()
 with open('final.c', 'a') as writer:
     writer.write(code)
 reader.close()
