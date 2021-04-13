@@ -10,8 +10,6 @@
 
 #define MAX_BODIES 25
 #define TOP_VIEW 1
-#define ECLIPTIC_VIEW 2
-#define SHIP_VIEW 3
 #define EARTH_VIEW 4
 #define MOVIE_VIEW 5
 #define FLY_VIEW 6

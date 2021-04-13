@@ -27,24 +27,39 @@ drawAnimation = input("Do you want the planets moving? [yes/no] ")
 print("Axes, starfield, orbits, multiple camera views require the ability to interact with the system!")
 interaction = input("Do you want to be able to interact with the system? [yes/no] ")
 if interaction == "yes":
+    print("The player controlled camera view requires keyboard input!")
+    keyboardControl = input("Do you want to be able to interact by using the keyboard? [yes/no] ")
     print("Axes, starfield, orbits, camera views and the player controlled view require having a menu!")
     drawMenu = input("Do you want a menu? [yes/no] ")
     if drawMenu == "yes":
         drawOrbits = input("Do you want orbits? [yes/no] ")
         drawStarfield = input("Do you want a starfield? [yes/no] ")
         drawAxes = input("Do you want axes? [yes/no] ")
+        multipleCamera = input("Do you want more than the default static top camera view? [yes/no] ")
+        if multipleCamera == "yes":
+            earthView = input("Do you want earthView? [yes/no] ")
+            movieView = input("Do you want movieView? [yes/no] ")
+        else:
+            earthView = "no"
+            movieView = "no"
     else:
         drawOrbits = "no"
         drawStarfield = "no"
         drawAxes = "no"
-    print("The player controlled camera view requires keyboard input!")
-    keyboardControl = input("Do you want to be able to interact by using the keyboard? [yes/no] ")
+    if keyboardControl == "yes" and drawMenu == "yes" and multipleCamera == "yes":
+        playerView = input("Do you want playerView? [yes/no] ")
+    else:
+        playerView = "no"
 else:
+    keyboardControl = "no"
     drawMenu = "no"
     drawOrbits = "no"
     drawStarfield = "no"
     drawAxes = "no"
-    keyboardControl = "no"
+    multipleCamera = "no"
+    earthView = "no"
+    movieView = "no"
+    playerView = "no"
 
 print("Writing header")
 with open('headers.c', 'r') as reader:
@@ -98,6 +113,27 @@ with open('setView.c', 'r') as reader:
     code = reader.read()
 with open('final.c', 'a') as writer:
     writer.write(code)
+    if drawMenu == "yes" and multipleCamera == "yes":
+        if earthView == "yes":
+            writer.write("  case EARTH_VIEW:\n")
+            writer.write("      x_earth = bodies[3].orbital_radius * sin((bodies[3].orbit+90) * DEG_TO_RAD);//calculate the x component\n")
+            writer.write("      z_earth = bodies[3].orbital_radius * cos((bodies[3].orbit+90) * DEG_TO_RAD);//calculate the y component\n")
+            writer.write("      gluLookAt(x_earth*1.1, 10000000, z_earth*1.1, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0 );\n")
+            writer.write("      break;\n")
+        if movieView == "yes":
+            writer.write("  case MOVIE_VIEW:\n")
+            writer.write("      x_movie = bodies[3].orbital_radius * sinf((bodies[3].orbit+90) * DEG_TO_RAD);//calculate the x component\n")
+            writer.write("      z_movie = bodies[3].orbital_radius * cosf((bodies[3].orbit+90) * DEG_TO_RAD);//calculate the y component\n")
+            writer.write("      gluLookAt(x_movie+bodies[3].orbital_radius, bodies[3].orbital_radius, z_movie+bodies[3].orbital_radius, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0 );\n")
+            writer.write("      break;\n")
+        if playerView == "yes":
+            writer.write("  case FLY_VIEW:\n")
+            writer.write("      calculate_lookpoint(); /* Compute the centre of interest   */\n")
+            writer.write("      gluLookAt(eyex, eyey, eyez, centerx, centery, centerz, upx, upy, upz);\n")
+            writer.write("      break;\n")
+    writer.write("  }\n")
+    writer.write("  glutPostRedisplay();\n")
+    writer.write("}\n")
 reader.close()
 writer.close()
 
@@ -107,6 +143,15 @@ if drawMenu == "yes":
         code = reader.read()
     with open('final.c', 'a') as writer:
         writer.write(code)
+        if earthView == "yes":
+            writer.write("  case 4: current_view= EARTH_VIEW;\n")
+            writer.write("          break;\n")
+        if movieView == "yes":
+            writer.write("  case 5: current_view= MOVIE_VIEW;\n")
+            writer.write("          break;\n")
+        if playerView == "yes":
+            writer.write("  case 6: current_view= FLY_VIEW;\n")
+            writer.write("          break;\n")
         if drawOrbits == "yes":
             print("**Adding drawOrbits toggle")
             writer.write("  case 7: draw_orbits= !draw_orbits; break;\n")
@@ -130,25 +175,30 @@ with open('final.c', 'a') as writer:
     if drawMenu == "yes":
         print("**Adding default menu entries")
         writer.write('  glutCreateMenu (menu);\n')
-        writer.write('  glutAddMenuEntry ("Top view", 1);\n')
-        writer.write('  glutAddMenuEntry ("Ecliptic view", 2);\n')
-        writer.write('  glutAddMenuEntry ("Spaceship view", 3);\n')
-        writer.write('  glutAddMenuEntry ("Earth view", 4);\n')
-        writer.write('  glutAddMenuEntry ("Movie view", 5);\n')
-        writer.write('  glutAddMenuEntry ("Fly view", 6);\n')
+        if multipleCamera == "yes":
+            writer.write('  glutAddMenuEntry ("Top view", 1);\n')
+        if earthView == "yes":
+            print("**Adding earthView to menu")
+            writer.write('  glutAddMenuEntry ("Earth view", 4);\n')
+        if movieView == "yes":
+            print("**Adding movieView to menu")
+            writer.write('  glutAddMenuEntry ("Movie view", 5);\n')
+        if playerView == "yes":
+            print("**Adding playerView to menu")
+            writer.write('  glutAddMenuEntry ("Fly view", 6);\n')
         writer.write('  glutAddMenuEntry ("", 999);\n')
-    if drawOrbits == "yes":
-        print("**Adding drawOrbits to menu")
-        writer.write('  glutAddMenuEntry ("Toggle orbits", 7);\n')
-    if drawStarfield == "yes":
-        print("**Adding drawStarfield to menu")
-        writer.write('  glutAddMenuEntry ("Toggle starfield", 8);\n')
-    if drawAxes == "yes":
-        print("**Adding drawAxes to menu")
-        writer.write('  glutAddMenuEntry ("Toggle axes", 9);\n')
-    writer.write('  glutAddMenuEntry ("", 999);\n')
-    writer.write('  glutAddMenuEntry ("Quit", 10);\n')
-    writer.write('  glutAttachMenu (GLUT_RIGHT_BUTTON);\n')
+        if drawOrbits == "yes":
+            print("**Adding drawOrbits to menu")
+            writer.write('  glutAddMenuEntry ("Toggle orbits", 7);\n')
+        if drawStarfield == "yes":
+            print("**Adding drawStarfield to menu")
+            writer.write('  glutAddMenuEntry ("Toggle starfield", 8);\n')
+        if drawAxes == "yes":
+            print("**Adding drawAxes to menu")
+            writer.write('  glutAddMenuEntry ("Toggle axes", 9);\n')
+        writer.write('  glutAddMenuEntry ("", 999);\n')
+        writer.write('  glutAddMenuEntry ("Quit", 10);\n')
+        writer.write('  glutAttachMenu (GLUT_RIGHT_BUTTON);\n')
     if drawStarfield == "yes":
         print("**Initialize starfield")
         writer.write('  draw_starfield= 1;\n')

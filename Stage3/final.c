@@ -10,8 +10,6 @@
 
 #define MAX_BODIES 25
 #define TOP_VIEW 1
-#define ECLIPTIC_VIEW 2
-#define SHIP_VIEW 3
 #define EARTH_VIEW 4
 #define MOVIE_VIEW 5
 #define FLY_VIEW 6
@@ -80,34 +78,8 @@ void setView (void) {
   glLoadIdentity();
   switch (current_view) {
   case TOP_VIEW:
-    /* This is for you to complete. */
     gluLookAt(0.0, 550000000.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0, 1.0 );
     break;
-  case ECLIPTIC_VIEW:
-    /* This is for you to complete. */
-    gluLookAt(0.0, 0.0, 550000000.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0 );
-    break;
-  case SHIP_VIEW:
-    /* This is for you to complete. */
-    gluLookAt(154366378, 56345439, 105365820, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0 );
-    break;
-  case EARTH_VIEW:
-    /* This is for you to complete. */
-    x_earth = bodies[3].orbital_radius * sin((bodies[3].orbit+90) * DEG_TO_RAD);//calculate the x component
-    z_earth = bodies[3].orbital_radius * cos((bodies[3].orbit+90) * DEG_TO_RAD);//calculate the y component
-    gluLookAt(x_earth*1.1, 10000000, z_earth*1.1, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0 );
-    break;
-  case MOVIE_VIEW:
-    /* This is for you to complete. */
-    x_movie = bodies[3].orbital_radius * sinf((bodies[3].orbit+90) * DEG_TO_RAD);//calculate the x component
-    z_movie = bodies[3].orbital_radius * cosf((bodies[3].orbit+90) * DEG_TO_RAD);//calculate the y component
-    gluLookAt(x_movie+bodies[3].orbital_radius, bodies[3].orbital_radius, z_movie+bodies[3].orbital_radius, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0 );
-    break;
-  case FLY_VIEW:
-    calculate_lookpoint(); /* Compute the centre of interest   */
-    gluLookAt(eyex, eyey, eyez, centerx, centery, centerz, upx, upy, upz);
-    break;
-
   }
   glutPostRedisplay();
 }
@@ -135,9 +107,6 @@ void init(void)
   current_view= TOP_VIEW;
   draw_labels= 1;
   draw_orbits= 1;
-  glutAddMenuEntry ("", 999);
-  glutAddMenuEntry ("Quit", 10);
-  glutAttachMenu (GLUT_RIGHT_BUTTON);
 }
 void drawOrbit (int n) {}
 void drawBody(int n)
@@ -264,20 +233,6 @@ void readSystem(void)
 }
 
 /*****************************/
-/*****************************/
-
-void animate(void)
-{
-  int i;
-
-    date+= TIME_STEP;
-
-    for (i= 0; i < numBodies; i++)  {
-      bodies[i].spin += 360.0 * TIME_STEP / bodies[i].rot_period;
-      bodies[i].orbit += 360.0 * TIME_STEP / bodies[i].orbital_period;
-      glutPostRedisplay();
-    }
-}
 
 
 void drawString (void *font, float x, float y, char *str)
@@ -326,7 +281,6 @@ int main(int argc, char** argv)
   glutReshapeFunc (reshape);
   glutPassiveMotionFunc (mouse_motion);
   readSystem();
-  glutIdleFunc (animate);
   glutMainLoop();
   return 0;
 }

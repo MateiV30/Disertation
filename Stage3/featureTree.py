@@ -3,15 +3,17 @@ from graphviz import Source
 
 source = """
 digraph G{
-CameraView [style=dotted];
-A [label="Reading planet data", style=dotted];
+CameraView [peripheries=2];
+A [label="Reading planet data", peripheries=2];
 B [label="Ability to interact"];
 C [label="Single camera view"];
-D [label="Multiple camera views", style=dotted];
+D [label="Multiple camera views", peripheries=2];
 E [label="Camera moving in a pattern"];
 F [label="Camera moving from user input"];
 G [label="Reading from file"];
 H [label="Reading from command line"];
+I [label="esc to exit"];
+J [label="Cursor keys input"];
 B -> KeyboardControl;
 SolarSystem -> A [style=bold];
 SolarSystem -> PlanetAnimation;
@@ -25,15 +27,17 @@ CameraView -> C;
 CameraView -> D;
 D -> Menu [style=dotted, label="<requires>"];
 PlanetOrbits -> Menu [style=dotted, label="<requires>"];
-D -> StaticCamera;
+D -> TopCamera;
+D -> EarthCamera;
 D -> E;
 D -> F;
 F -> KeyboardControl [style=dotted, label="<requires>"];
-F -> Menu [style=dotted, label="<requires>"];
 Axes -> Menu [style=dotted, label="<requires>"];
 StarField -> Menu [style=dotted, label="<requires>"];
 A -> G;
 A -> H;
+KeyboardControl -> I;
+KeyboardControl -> J;
 }
 """
 #
