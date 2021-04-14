@@ -1,7 +1,8 @@
+
 void readSystem(void)
 {
   /* reads in the description of the solar system */
-  
+
   int i;
   printf("How many planets do you want? ");
   scanf("%d", &numBodies);
@@ -32,7 +33,7 @@ void readSystem(void)
     bodies[i].orbit= myRand() * 360.0; /* Start each body's orbit at a
                                           random angle */
     bodies[i].radius*= 1000.0; /* Magnify the radii to make them visible */
-    
+
     printf("Input for %s terminated!! \n\n", bodies[i].name);
   }
   printf("Input terminated, enjoy the animation!\n");

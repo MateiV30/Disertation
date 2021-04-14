@@ -1,18 +1,3 @@
-
-
-void drawString (void *font, float x, float y, char *str)
-{ /* Displays the string "str" at (x,y,0), using font "font" */
-
-  /* This is for you to complete. */
-
-}
-
-/*****************************/
-
-void drawLabel(int n){ /* Draws the name of body "n" */}
-
-/*****************************/
-
 void reshape(int w, int h)
 {
   glViewport(0, 0, (GLsizei) w, (GLsizei) h);

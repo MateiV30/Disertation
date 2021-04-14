@@ -21,7 +21,10 @@
 # be useless if we choose to not have orbits but needs to be present to be able
 # to have orbits if the user wants them.
 # Having inneficienties created by the need to write versatile code
-# Introduced a variable in the code to check if we actually have orbits selectedd
+# Introduced a variable in the code to check if we actually have orbits selected
+
+# If there are no requirements we have 4096 variants
+# Introducing the requirements we remain with 460
 
 readStyle = input("How do you want to input the planet data? [file/cmd] ")
 drawAnimation = input("Do you want the planets moving? [yes/no] ")
@@ -212,7 +215,7 @@ if drawOrbits == "yes":
     with open('drawOrbit.c', 'r') as reader:
         code = reader.read()
 else:
-    code = "void drawOrbit (int n) {}"
+    code = "\nvoid drawOrbit (int n) {}\n"
 with open('final.c', 'a') as writer:
     writer.write(code)
 reader.close()

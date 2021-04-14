@@ -1,3 +1,4 @@
+
 void readSystem(void)
 {
   /* reads in the description of the solar system */
