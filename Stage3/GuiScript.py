@@ -25,7 +25,7 @@ def create_code():
             code = reader.read()
         with open('final.c', 'a') as writer:
             writer.write(code)
-            if drawOrbits == 1:
+            if drawOrbits.get() == 1:
                 print("**Adding drawOrbits variable")
                 writer.write("GLboolean have_Orbit = GL_TRUE;\n")
             else:

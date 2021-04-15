@@ -48,7 +48,7 @@ GLfloat  upx,     upy,     upz;     /* View up vector           */
 GLint width= 900, height= 900;      /* size of window           */
 
 /*****************************/
-GLboolean have_Orbit = GL_FALSE;
+GLboolean have_Orbit = GL_TRUE;
 
 /*****************************/
 
@@ -84,6 +84,16 @@ void setView (void) {
   glutPostRedisplay();
 }
 
+void menu (int menuentry) {
+  switch (menuentry) {
+  case 1: current_view= TOP_VIEW;
+          break;
+  case 7: draw_orbits= !draw_orbits; break;
+  case 9: draw_Axes= !draw_Axes; break;
+  case 10: exit(0);
+  }
+}
+
 void init(void)
 {
   /* Define background colour */
@@ -107,9 +117,38 @@ void init(void)
   current_view= TOP_VIEW;
   draw_labels= 1;
   draw_orbits= 1;
+  glutCreateMenu (menu);
+  glutAddMenuEntry ("Top view", 1);
+  glutAddMenuEntry ("", 999);
+  glutAddMenuEntry ("Toggle orbits", 7);
+  glutAddMenuEntry ("Toggle axes", 9);
+  glutAddMenuEntry ("", 999);
+  glutAddMenuEntry ("Quit", 10);
+  glutAttachMenu (GLUT_RIGHT_BUTTON);
 }
 
-void drawOrbit (int n) {}
+void drawOrbit (int n)
+{
+    if(draw_orbits)
+    {
+      int i;
+      glBegin(GL_LINE_LOOP);
+        for(i = 0; i < ORBIT_POLY_SIDES; i++)
+        {
+          float theta = 2.0f * 3.1415926f * (float)i / (float)ORBIT_POLY_SIDES;//get the current angle
+          //float theta = 90-((ORBIT_POLY_SIDES-2)*180 / 2*ORBIT_POLY_SIDES);
+
+          float x = bodies[n].orbital_radius * sinf(theta);//calculate the x component
+          float z = bodies[n].orbital_radius * cosf(theta);//calculate the y component
+
+          glVertex3f(x, 0, z);//output vertex
+        }
+        glColor3f(bodies[n].r, bodies[n].g, bodies[n].b);
+        glEnd();
+    }
+}
+
+/*****************************/
 
 void drawBody(int n)
 {
@@ -181,6 +220,33 @@ void drawBody(int n)
 
 /*****************************/
 
+void drawAxes (void) {
+
+// Draws X Y and Z axis lines, of length LEN
+
+   float LEN= 1000000000000000.0;
+
+   glLineWidth(2.0);
+
+   glBegin(GL_LINES);
+   glColor3f(1.0,0.0,0.0); // red
+       glVertex3f(0.0, 0.0, 0.0);
+       glVertex3f(LEN, 0.0, 0.0);
+
+   glColor3f(0.0,1.0,0.0); // green
+       glVertex3f(0.0, 0.0, 0.0);
+       glVertex3f(0.0, LEN, 0.0);
+
+   glColor3f(0.0,0.0,1.0); // blue
+       glVertex3f(0.0, 0.0, 0.0);
+       glVertex3f(0.0, 0.0, LEN);
+   glEnd();
+
+   glLineWidth(1.0);
+}
+
+/***********************************/
+
 void display(void)
 {
   int i;
@@ -196,6 +262,7 @@ void display(void)
       drawBody (i);
     glPopMatrix();
   }
+  if (draw_Axes) drawAxes();
   glutSwapBuffers();
 }
 
