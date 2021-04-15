@@ -1,5 +1,6 @@
 from tkinter import messagebox
 from tkinter import *
+from PIL import ImageTk,Image
 
 def create_code():
     # print("{} {}".format("drawAnimation =", drawAnimation.get()))
@@ -386,6 +387,14 @@ def toggle_keyboardControl_dependencies():
         playerViewText.set("User controlled camera")
 
 window = Tk()
+
+####################### Add the feature model image ###########################
+canvas = Canvas(window, width = 1100, height = 500)
+canvas.pack()
+image_start = Image.open("feature_model.png")
+image_resized = image_start.resize((1100, 500), Image.ANTIALIAS)
+img = ImageTk.PhotoImage(image_resized)
+canvas.create_image(10,10, anchor=NW, image=img)
 
 ######################## readStyle ######################################
 readStyleFrame = Frame()

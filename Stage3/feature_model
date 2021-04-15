@@ -1,0 +1,34 @@
+
+digraph G{
+CameraView [peripheries=2];
+A [label="Reading planet data", peripheries=2];
+B [label="Ability to interact"];
+C [label="Single camera view"];
+D [label="Multiple camera views", peripheries=2];
+E [label="Camera moving in a pattern"];
+F [label="Camera moving from user input"];
+G [label="Reading from file"];
+H [label="Reading from command line"];
+B -> KeyboardControl;
+SolarSystem -> A [style=bold];
+SolarSystem -> PlanetAnimation;
+SolarSystem -> PlanetOrbits;
+SolarSystem -> CameraView [style=bold];
+B -> Menu;
+SolarSystem -> B;
+SolarSystem -> Axes;
+SolarSystem -> StarField;
+CameraView -> C;
+CameraView -> D;
+D -> Menu [style=dotted, label="<requires>"];
+PlanetOrbits -> Menu [style=dotted, label="<requires>"];
+D -> TopCamera;
+D -> EarthCamera;
+D -> E;
+D -> F;
+F -> KeyboardControl [style=dotted, label="<requires>"];
+Axes -> Menu [style=dotted, label="<requires>"];
+StarField -> Menu [style=dotted, label="<requires>"];
+A -> G;
+A -> H;
+}

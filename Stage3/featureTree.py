@@ -12,8 +12,6 @@ E [label="Camera moving in a pattern"];
 F [label="Camera moving from user input"];
 G [label="Reading from file"];
 H [label="Reading from command line"];
-I [label="esc to exit"];
-J [label="Cursor keys input"];
 B -> KeyboardControl;
 SolarSystem -> A [style=bold];
 SolarSystem -> PlanetAnimation;
@@ -36,12 +34,10 @@ Axes -> Menu [style=dotted, label="<requires>"];
 StarField -> Menu [style=dotted, label="<requires>"];
 A -> G;
 A -> H;
-KeyboardControl -> I;
-KeyboardControl -> J;
 }
 """
 #
-model = Source(source, filename="feature_model.gv", format="png")
+model = Source(source, filename="feature_model", format="png")
 model.view()
 
 

@@ -1,5 +1,6 @@
 from tkinter import messagebox
 from tkinter import *
+from PIL import ImageTk,Image
 
 cameraView = [1, 2]#["single", "multiple"]
 interactions = [1, 2]#["yes", "no"]
@@ -39,7 +40,6 @@ def create_code():
                                                                 for user in users:
                                                                     if keyboard == 1:
                                                                         if findCounter == selectedVariant.get():
-                                                                            print("{}{}".format("Found variant: ", findCounter))
                                                                             print("File:{} Animation:{} Interaction:{} Keyboard:{} Menu:{} Orbits:{} Axes:{} Starfield:{} View:{} Movie:{} Earth:{} User:{}".format(read, animation, interact, keyboard, menu, orbit, axe, starfield, view, movie, earth, user))
                                                                             readStyle.set(read)
                                                                             drawAnimation.set(animation)
@@ -56,7 +56,6 @@ def create_code():
                                                                         findCounter = findCounter+1
                                                                     elif user == 2:
                                                                         if findCounter == selectedVariant.get():
-                                                                            print("{}{}".format("Found variant: ", findCounter))
                                                                             print("File:{} Animation:{} Interaction:{} Keyboard:{} Menu:{} Orbits:{} Axes:{} Starfield:{} View:{} Movie:{} Earth:{} User:{}".format(read, animation, interact, keyboard, menu, orbit, axe, starfield, view, movie, earth, user))
                                                                             readStyle.set(read)
                                                                             drawAnimation.set(animation)
@@ -73,7 +72,6 @@ def create_code():
                                                                         findCounter = findCounter+1
                                                     else:
                                                         if findCounter == selectedVariant.get():
-                                                            print("{}{}".format("Found variant: ", findCounter))
                                                             print("File:{} Animation:{} Interaction:{} Keyboard:{} Menu:{} Orbits:{} Axes:{} Starfield:{} View:{}".format(read, animation, interact, keyboard, menu, orbit, axe, starfield, view))
                                                             readStyle.set(read)
                                                             drawAnimation.set(animation)
@@ -90,7 +88,6 @@ def create_code():
                                                         findCounter = findCounter+1
                                 else:
                                     if findCounter == selectedVariant.get():
-                                        print("{}{}".format("Found variant: ", findCounter))
                                         print("File:{} Animation:{} Interaction:{} Keyboard:{} Menu:{}".format(read, animation, interact, keyboard, menu))
                                         readStyle.set(read)
                                         drawAnimation.set(animation)
@@ -107,7 +104,6 @@ def create_code():
                                     findCounter = findCounter+1
                     else:
                         if findCounter == selectedVariant.get():
-                            print("{}{}".format("Found variant: ", findCounter))
                             print("File:{} Animation:{} Interaction:{}".format(read, animation, interact))
                             readStyle.set(read)
                             drawAnimation.set(animation)
@@ -388,8 +384,16 @@ earthView = IntVar()
 movieView = IntVar()
 playerView = IntVar()
 
+####################### Add the feature model image ###########################
+canvas = Canvas(window, width = 1100, height = 400)
+canvas.pack()
+image_start = Image.open("feature_model.png")
+image_resized = image_start.resize((1100, 400), Image.ANTIALIAS)
+img = ImageTk.PhotoImage(image_resized)
+canvas.create_image(10,10, anchor=NW, image=img)
+
 text=Text()
-scrollbar = Scrollbar(window, command=text.yview)
+scrollbar = Scrollbar(text, command=text.yview)
 text.configure(yscrollcommand=scrollbar.set)
 scrollbar.pack(side=RIGHT, fill=Y)
 text.pack(fill=BOTH, expand=True)
@@ -413,41 +417,40 @@ for read in reading:
                                                     for earth in earths:
                                                         for user in users:
                                                             if keyboard == 1:
-                                                                radio = Radiobutton(window, text="File:{} Animation:{} Interaction:{} Keyboard:{} Menu:{} Orbits:{} Axes:{} Starfield:{} View:{} Movie:{} Earth:{} User:{}".format(read, animation, interact, keyboard, menu, orbit, axe, starfield, view, movie, earth, user),
+                                                                radio = Radiobutton(window, text="Input:{} Animation:{} Interaction:{} Keyboard:{} Menu:{} Orbits:{} Axes:{} Starfield:{} View:{} Movie:{} Earth:{} User:{}".format(read, animation, interact, keyboard, menu, orbit, axe, starfield, view, movie, earth, user),
                                                                                                variable=selectedVariant, value=counter)
                                                                 #radio.pack()
                                                                 text.window_create("end", window=radio)
                                                                 text.insert("end", "\n")
                                                                 counter = counter+1
                                                             elif user == 2:
-                                                                radio = Radiobutton(window, text="File:{} Animation:{} Interaction:{} Keyboard:{} Menu:{} Orbits:{} Axes:{} Starfield:{} View:{} Movie:{} Earth:{} User:{}".format(read, animation, interact, keyboard, menu, orbit, axe, starfield, view, movie, earth, user),
+                                                                radio = Radiobutton(window, text="Input:{} Animation:{} Interaction:{} Keyboard:{} Menu:{} Orbits:{} Axes:{} Starfield:{} View:{} Movie:{} Earth:{} User:{}".format(read, animation, interact, keyboard, menu, orbit, axe, starfield, view, movie, earth, user),
                                                                                                variable=selectedVariant, value=counter)
                                                                 #radio.pack()
                                                                 text.window_create("end", window=radio)
                                                                 text.insert("end", "\n")
                                                                 counter = counter+1
                                             else:
-                                                radio = Radiobutton(window, text="File:{} Animation:{} Interaction:{} Keyboard:{} Menu:{} Orbits:{} Axes:{} Starfield:{} View:{}".format(read, animation, interact, keyboard, menu, orbit, axe, starfield, view),
+                                                radio = Radiobutton(window, text="Input:{} Animation:{} Interaction:{} Keyboard:{} Menu:{} Orbits:{} Axes:{} Starfield:{} View:{}".format(read, animation, interact, keyboard, menu, orbit, axe, starfield, view),
                                                                                variable=selectedVariant, value=counter)
                                                 #radio.pack()
                                                 text.window_create("end", window=radio)
                                                 text.insert("end", "\n")
                                                 counter = counter+1
                         else:
-                            radio = Radiobutton(window, text="File:{} Animation:{} Interaction:{} Keyboard:{} Menu:{}".format(read, animation, interact, keyboard, menu),
+                            radio = Radiobutton(window, text="Input:{} Animation:{} Interaction:{} Keyboard:{} Menu:{}".format(read, animation, interact, keyboard, menu),
                                                            variable=selectedVariant, value=counter)
                             #radio.pack()
                             text.window_create("end", window=radio)
                             text.insert("end", "\n")
                             counter = counter+1
             else:
-                radio = Radiobutton(window, text="File:{} Animation:{} Interaction:{}".format(read, animation, interact),
+                radio = Radiobutton(window, text="Input:{} Animation:{} Interaction:{}".format(read, animation, interact),
                                                variable=selectedVariant, value=counter)
                 #radio.pack()
                 text.window_create("end", window=radio)
                 text.insert("end", "\n")
                 counter = counter+1
-
 
 btn_create = Button(window, text = "Create the code!", command = create_code)
 btn_create.pack()
